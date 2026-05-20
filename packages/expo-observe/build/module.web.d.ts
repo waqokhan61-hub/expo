@@ -4,6 +4,7 @@ export * from './types';
 declare class ExpoObserveModule extends NativeModule implements ExpoObserveModuleType {
     dispatchEvents(): Promise<void>;
     configure(config: Config): void;
+    setGlobalAttributes(attributes?: Record<string, unknown> | null): void;
     setBundleDefaults(defaults: {
         environment: string;
         isJsDev: boolean;

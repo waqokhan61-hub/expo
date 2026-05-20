@@ -62,6 +62,20 @@ export interface ExpoObserveModuleType {
    */
   configure(config: Config): void;
   /**
+   * Sets attributes merged into every subsequent metric and log event.
+   * Per-record keys win on collision. Pass `null`, `undefined`, or an empty
+   * object to clear.
+   *
+   * @example
+   * ```ts
+   * ExpoObserve.setGlobalAttributes({
+   *   subscription_tier: 'pro',
+   *   experiment_variant: 'B',
+   * });
+   * ```
+   */
+  setGlobalAttributes(attributes?: Record<string, unknown> | null): void;
+  /**
    * Pushes JS-bundle-derived facts (`process.env.NODE_ENV`, `__DEV__`) into native
    * storage. Called automatically once when the package is first imported; should
    * not be called by host apps directly.

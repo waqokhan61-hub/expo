@@ -6,6 +6,7 @@ import expo.modules.appmetrics.AppMetadata
 import expo.modules.appmetrics.AppMetricsPreferences
 import expo.modules.appmetrics.SQLITE_MAX_BIND_VARIABLES
 import expo.modules.appmetrics.TAG
+import expo.modules.appmetrics.GlobalAttributes
 import expo.modules.appmetrics.utils.TimeUtils
 import kotlinx.serialization.builtins.MapSerializer
 import kotlinx.serialization.builtins.serializer
@@ -94,7 +95,12 @@ class SessionManager(
     metrics: List<Metric>,
     sessionId: String
   ) {
-    val metricsWithSession = metrics.map { it.copy(sessionId = sessionId) }
+    val metricsWithSession = metrics.map { metric ->
+      metric.copy(
+        sessionId = sessionId,
+        params = GlobalAttributes.mergedJson(metric.params)
+      )
+    }
     database.metricDao().insertAll(metricsWithSession)
     val metricIds = metricsWithSession.map { it.metricId }
     metricsInsertListeners.forEach { listener ->
@@ -131,7 +137,12 @@ class SessionManager(
     logs: List<LogRecord>,
     sessionId: String
   ) {
-    val logsWithSession = logs.map { it.copy(sessionId = sessionId) }
+    val logsWithSession = logs.map { log ->
+      log.copy(
+        sessionId = sessionId,
+        attributes = GlobalAttributes.mergedJson(log.attributes)
+      )
+    }
     database.logDao().insertAll(logsWithSession)
     val logIds = logsWithSession.map { it.logId }
     logsInsertListeners.forEach { listener ->
